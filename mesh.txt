@@ -1,0 +1,550 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "665ba7fb-280d-49eb-8359-4783619b9ae6",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\U422703\\AppData\\Local\\Temp\\ipykernel_32744\\1296691429.py:2: PyFluentDeprecationWarning: Argument 'show_gui' is deprecated; use 'ui_mode' instead.\n",
+      "  meshing=pyfluent.launch_fluent(mode=\"meshing\",show_gui=True)\n"
+     ]
+    }
+   ],
+   "source": [
+    "import ansys.fluent.core as pyfluent\n",
+    "meshing=pyfluent.launch_fluent(mode=\"meshing\",show_gui=True)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "3363bce5-7fc5-4ec3-a375-c4940261d403",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "workflow = meshing.workflow\n",
+    "workflow.InitializeWorkflow(WorkflowType=\"Watertight Geometry\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "53d64ec6-8a4e-4139-b2f8-ac376e3f8fb4",
+   "metadata": {},
+   "source": [
+    "#This is a heading."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "9c962e33-6eca-4a52-8f8a-0e033fd62c69",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "pyfluent.datamodel WARNING: Failed to subscribe event: {'eventrequest': [{'rules': 'workflow', 'attributeChangedEventRequest': {'path': '/TaskObject:Import Geometry/Arguments', 'attribute': 'isReadOnly'}}]}!\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Importing one geom object per program-controlled and one zone per body ...\n",
+      "writing cad import logs to \"C:\\PyFluent\\Flow-through-pipe\\mesh\\\\cadImport1786425050.383327.log\"\n",
+      "\n",
+      "Reading \"C:\\PyFluent\\Flow-through-pipe\\mesh\\FM_PC-CND2300CT8_33728/out1786425039.25426233728.tgf\"...\n",
+      "Reading \"C:\\PyFluent\\Flow-through-pipe\\mesh\\FM_PC-CND2300CT8_33728/out1786425039.25426233728.tgf\"...\n",
+      "nodes: 146\n",
+      "edges: 72\n",
+      "faces: 144\n",
+      "cells: 0\n",
+      "generating pointers...done.\n",
+      "extracting boundary entities...\n",
+      " 146 boundary nodes.\n",
+      " 144 boundary faces.\n",
+      " 3 boundary face zones.\n",
+      "done.\n",
+      "analyzing boundary connectivity...done.\n",
+      "using plugIn session Discovery[28164]\n",
+      "\n",
+      "---------------- Import of Fluid-Circular-pipe-75mm-1m, consisting of one single part/object , complete. \n",
+      " \n",
+      "\n",
+      "---------------- Import complete in  0.49 minutes.\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "import_task = workflow.TaskObject[\"Import Geometry\"]\n",
+    "import_task.Arguments.set_state({\n",
+    "    \"FileName\": r\"C:\\PyFluent\\Flow-through-pipe\\CAD\\Fluid-Circular-pipe-75mm-1m.scdocx\",\n",
+    "    \"LengthUnit\": \"mm\"\n",
+    "})\n",
+    "import_task.Execute()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "6043c1b4-01ff-409e-8c53-1db00eb2ac1f",
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "pyfluent.datamodel WARNING: Failed to subscribe event: {'eventrequest': [{'rules': 'workflow', 'attributeChangedEventRequest': {'path': '/TaskObject:Generate the Surface Mesh/Arguments', 'attribute': 'isReadOnly'}}]}!\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      ">>> Writing \"C:\\PyFluent\\Flow-through-pipe\\mesh\\FM_PC-CND2300CT8_33728\\TaskObject3.msh.h5\" ...\n",
+      "writing 1 node zones\n",
+      "writing 2 edge zones \n",
+      "writing 3 face zones \n",
+      "writing node curvature data\n",
+      "done.\n",
+      "Importing one mesh object per program-controlled and one zone per body ...\n",
+      "writing cad import logs to \"C:\\PyFluent\\Flow-through-pipe\\CAD\\\\cadImport1786425069.911575.log\"\n",
+      "\n",
+      "Reading \"C:\\PyFluent\\Flow-through-pipe\\mesh\\FM_PC-CND2300CT8_33728/out1786425069.89407133728.tgf\"...\n",
+      "Reading \"C:\\PyFluent\\Flow-through-pipe\\mesh\\FM_PC-CND2300CT8_33728/out1786425069.89407133728.tgf\"...\n",
+      "nodes: 91292\n",
+      "edges: 158\n",
+      "faces: 182260\n",
+      "cells: 0\n",
+      "appending mesh...\n",
+      "done.\n",
+      "generating pointers...done.\n",
+      "extracting boundary entities...\n",
+      " 91438 boundary nodes.\n",
+      " 182404 boundary faces.\n",
+      " 6 boundary face zones.\n",
+      "done.\n",
+      "\n",
+      "Reading \"C:\\PyFluent\\Flow-through-pipe\\mesh\\FM_PC-CND2300CT8_33728\\Fluid-Circular-pipe-75mm-1m.sf\"...\n",
+      "Reading \"C:\\PyFluent\\Flow-through-pipe\\mesh\\FM_PC-CND2300CT8_33728\\Fluid-Circular-pipe-75mm-1m.sf\"...\n",
+      "ANSYS(R) TGLib(TM) 3D, revision 24.1.0\n",
+      " Read 383027 vertices\n",
+      "0 faces marked.\n",
+      "\n",
+      "    computing regions...done\n",
+      "\n",
+      "\n",
+      "------------------------- --------------------- -------------------- ---------------- ----------\n",
+      "                     name skewed-cells (> 0.80)    averaged-skewness maximum-skewness face count\n",
+      "------------------------- --------------------- -------------------- ---------------- ----------\n",
+      "\n",
+      "                    fluid                     0          0.011137632       0.40131411     182260\n",
+      "------------------------- --------------------- -------------------- ---------------- ----------\n",
+      "                     name skewed-cells (> 0.80)    averaged-skewness maximum-skewness face count\n",
+      "------------------------- --------------------- -------------------- ---------------- ----------\n",
+      "\n",
+      "fluid-circular-pipe-75mm-1m-fluid                     0          0.011137632       0.40131411     182260\n",
+      "\n",
+      "---------------- After Surface mesh, the model consists of 1 fluid/solid regions and 0 voids.\n",
+      "\n",
+      "---------------- Surface Meshing of Fluid-Circular-pipe-75mm-1m complete in  0.10 minutes, with a maximum skewness of  0.40. \n",
+      "\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "surface_mesh = workflow.TaskObject[\"Generate the Surface Mesh\"]\n",
+    "\n",
+    "surface_mesh.Arguments.set_state({\n",
+    "    \"CFDSurfaceMeshControls\": {\n",
+    "        \"MaxSize\": 1,\n",
+    "        \"MinSize\": 0.667\n",
+    "    }\n",
+    "})\n",
+    "surface_mesh.Execute()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "c4602c66-4adb-4088-81b9-326b9ee6f156",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "---------------- Boundary Conditions Updated\n",
+      "\n",
+      "---------------- Describe Geometry task complete in  0.00 minutes.\n",
+      "Writing \"C:\\PyFluent\\Flow-through-pipe\\mesh\\FM_PC-CND2300CT8_33728\\TaskObject8.msh.h5\" ...\n",
+      "writing 2 node zones\n",
+      "writing 4 edge zones \n",
+      "writing 6 face zones \n",
+      "writing node curvature data\n",
+      "done.\n",
+      "    updating regions...\n",
+      "    done.\n",
+      "---------------- Region identification of fluid-circular-pipe-75mm-1m-fluid was not successful. \n",
+      "\n",
+      "---------------- Regions Updated\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "workflow.TaskObject[\"Update Boundaries\"].Execute()\n",
+    "workflow.TaskObject[\"Update Regions\"].Execute()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "562eb6cb-d881-4b57-bf7f-0ec21ba147af",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "pyfluent.datamodel WARNING: Failed to subscribe event: {'eventrequest': [{'rules': 'workflow', 'attributeChangedEventRequest': {'path': '/TaskObject:smooth-transition_1/Arguments', 'attribute': 'isReadOnly'}}]}!\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Illegitimate input at /AddBoundaryLayers; AddIn\n",
+      "Illegitimate input at /AddBoundaryLayers; AddIn\n",
+      "Illegitimate input at /AddBoundaryLayers; AddIn\n",
+      "Illegitimate input at /AddBoundaryLayers; AddIn\n",
+      "Illegitimate input at /AddBoundaryLayers; AddIn\n",
+      "Illegitimate input at /AddBoundaryLayers; AddIn\n",
+      "Illegitimate input at /AddBoundaryLayers; AddIn\n",
+      "Illegitimate input at /AddBoundaryLayers; AddIn\n",
+      "Illegitimate input at /AddBoundaryLayers; AddIn\n",
+      "\n",
+      "Created Scoped Prism: smooth-transition_1\n",
+      "\n",
+      "---------------- Inflation control added to fluid-circular-pipe-75mm-1m-fluid\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# 1. Fetch the main boundary layer container\n",
+    "add_bl = meshing.workflow.TaskObject[\"Add Boundary Layers\"]\n",
+    "\n",
+    "# 2. Add a unique compound child control \n",
+    "add_bl.AddChildToTask()\n",
+    "add_bl.InsertCompoundChildTask()\n",
+    "\n",
+    "#3.use this only when you want to control the BL via first height\n",
+    "bl_task=meshing.workflow.TaskObject[\"smooth-transition_1\"]\n",
+    "\n",
+    "#4. Target your specific surface via \"smooth-transition_1\"\n",
+    "meshing.workflow.TaskObject[\"smooth-transition_1\"].Arguments.set_state({\n",
+    "    \"BLControlName\": \"smooth-transition_1\",    #for default number of layers,insert \"smooth-transition_1\" else use \"uniform_1\"\n",
+    "    \"OffsetMethodType\": \"smooth-transition\",  #\"smooth-transition\" or \"uniform\"\n",
+    "    \"NumberOfLayers\": 7,\n",
+    "    \"Rate\": 1.2,\n",
+    "    \"TransitionRatio\": 0.2727,\n",
+    "    \"AddIn\": \"fluid-regions\",               \n",
+    "    \n",
+    "    # --- FIXED: CORRECT NESTING STRUCTURE ---\n",
+    "    \"FaceScope\": {\n",
+    "        \"GrowOn\": \"selected-labels\",\n",
+    "    },\n",
+    "    \"BlLabelList\": [\"wall\"]  # Target specific label\n",
+    "})\n",
+    "\n",
+    "# 5. Execute to construct the localized boundary layer mesh\n",
+    "add_bl.Execute()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "2b969b1d-faf4-4a60-a61d-97ff8c4da751",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "pyfluent.datamodel WARNING: Failed to subscribe event: {'eventrequest': [{'rules': 'workflow', 'attributeChangedEventRequest': {'path': '/TaskObject:Generate the Volume Mesh/Arguments', 'attribute': 'isReadOnly'}}]}!\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Writing \"C:\\PyFluent\\Flow-through-pipe\\mesh\\FM_PC-CND2300CT8_33728\\TaskObject11.msh.h5\" ...\n",
+      "writing 2 node zones\n",
+      "writing 4 edge zones \n",
+      "writing 6 face zones \n",
+      "writing node curvature data\n",
+      "done.\n",
+      "checking object \"fluid-circular-pipe-75mm-1m-fluid\"...\n",
+      "    skipping validating regions of mesh object \"fluid-circular-pipe-75mm-1m-fluid\"...done.\n",
+      "auto meshing object fluid-circular-pipe-75mm-1m-fluid...\n",
+      "\n",
+      "processing scoped prisms...\n",
+      "    starting orientation...\n",
+      "done.\n",
+      "    setting prism growth...done.\n",
+      "done.\n",
+      "Identifying Topology...\n",
+      "\n",
+      "Generating Prisms...\n",
+      "\n",
+      "Generating Pyramids...\n",
+      "\n",
+      "Generating initial mesh...\n",
+      "delete dead zones.\n",
+      "\n",
+      "Refining mesh...\n",
+      "\n",
+      "Create polyhedra ...\n",
+      "\n",
+      "Merging Domains...\n",
+      "done.\n",
+      "\n",
+      "                     name       id cells (quality < 0.05)  minimum quality cell count\n",
+      "------------------------- -------- ---------------------- ---------------- ----------\n",
+      "                    fluid     2364                      0       0.54764025    1027839\n",
+      "\n",
+      "                     name       id cells (quality < 0.05)  minimum quality cell count\n",
+      "------------------------- -------- ---------------------- ---------------- ----------\n",
+      "          Overall Summary     none                      0       0.54764025    1027839\n",
+      "\n",
+      "Total Number of Cell Zones : 1\n",
+      "\n",
+      "[Quality Measure : Orthogonal Quality]\n",
+      "\n",
+      "---------------- Volume mesh creation completed in :  1.31 minutes\n",
+      "\n",
+      "---------------- 1027839 cells were created in :  1.32 minutes\n",
+      "\n",
+      "---------------- The mesh has a minimum Orthogonal Quality of:  0.55 \n",
+      "\n",
+      "---------------- The volume meshing of fluid-circular-pipe-75mm-1m-fluid is complete.\n",
+      "\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# 1. Fetch the volume mesh container task\n",
+    "volume_mesh = meshing.workflow.TaskObject[\"Generate the Volume Mesh\"]\n",
+    "\n",
+    "# 2. Structure parameters with proper dictionary nesting\n",
+    "volume_mesh.Arguments.set_state({\n",
+    "    \"VolumeFill\": \"polyhedra\",               # Choose polyhedra, tet, or poly-hexcore\n",
+    "    \n",
+    "    # --- FIXED: NESTED SIZING CONTROLS ---\n",
+    "    \"VolumeFillControls\": {\n",
+    "        \"TetPolyMaxCellLength\": 1.25                 # Max cell length must live here\n",
+    "    }\n",
+    "})\n",
+    "\n",
+    "# 3. Execute the volume mesh task\n",
+    "volume_mesh.Execute()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "9c923cc7-78dc-4d8b-af00-6efa2dbcc62e",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Domain extents.\n",
+      "  x-coordinate: min = -1.250000e+01, max = 1.250000e+01.\n",
+      "  y-coordinate: min = 0.000000e+00, max = 1.000000e+03.\n",
+      "  z-coordinate: min = -1.250000e+01, max = 1.250000e+01.\n",
+      "Volume statistics.\n",
+      "  minimum volume: 1.051512e-02.\n",
+      "  maximum volume: 1.805337e+00.\n",
+      "    total volume: 4.900663e+05.\n",
+      "Face area statistics.\n",
+      "   minimum face area: 9.475693e-09.\n",
+      "   maximum face area: 1.552457e+00.\n",
+      "   average face area: 3.444519e-01.\n",
+      "Checking number of nodes per edge.\n",
+      "Checking number of nodes per face.\n",
+      "Checking number of nodes per cell.\n",
+      "Checking number of faces/neighbors per cell.\n",
+      "Checking cell faces/neighbors.\n",
+      "Checking isolated cells.\n",
+      "Checking face handedness.\n",
+      "Checking periodic face pairs.\n",
+      "Checking face children.\n",
+      "Checking face zone boundary conditions.\n",
+      "Checking for invalid node coordinates.\n",
+      "Checking poly cells.\n",
+      "Checking zones.\n",
+      "Checking neighborhood.\n",
+      "Checking modified centroid.\n",
+      "Checking non-positive or too small area.\n",
+      "Checking face zones thread type.\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": []
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "meshing.tui.mesh.check_mesh()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "922c796e-344c-42b1-82b3-95f8c64c9098",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Done.Writing \"C:\\PyFluent\\Flow-through-pipe\\mesh\\Fluid-Circular-pipe-25mm-1mm-7.msh.h5\" ...\n",
+      "writing 4 node zones\n",
+      "writing 2 edge zones \n",
+      "writing 4 face zones \n",
+      "writing 1 cell zones \n",
+      "writing boundary layer flags\n",
+      "writing node curvature data\n",
+      "done.Copying the required intermediate mesh files into C:\\\\PyFluent\\\\Flow-through-pipe\\\\mesh\\\\Fluid-Circular-pipe-25mm-1mm-7_workflow_files\n",
+      "Done.\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": []
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "meshing.tui.file.write_mesh(r\"C:\\PyFluent\\Flow-through-pipe\\mesh\\Fluid-Circular-pipe-25mm-1mm-7.msh.h5\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ca1f60ae-945a-4f7a-aafe-a7a2fb2e33b3",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

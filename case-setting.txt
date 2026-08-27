@@ -1,0 +1,113 @@
+import ansys.fluent.core as pyfluent
+
+solver=pyfluent.launch_fluent(mode="solver",show_gui=True)
+
+#1. Read your primary/first file
+solver.file.read_mesh(file_name="XX.msh.h5\")  # Or .msh
+
+# 2. Append the second file into the current session    
+# 3. Check the mesh to ensure no zone ID conflicts
+ solver.tui.mesh.check()
+
+solver.setup.models.viscous.model="k-omega" #set to k-omega SST    
+solver.setup.models.viscous.k_omega_model="sst"
+
+materials = solver.setup.materials    
+materials.fluid.create("oil")                            
+materials.fluid["oil"].density.value = 847            # kg/m^3\n",
+materials.fluid["oil"].viscosity.value = 0.02         # Pa-s"
+
+solver.execute_tui('define/boundary-conditions/zone-type fluid fluid')
+
+solver.settings.setup.cell_zone_conditions.fluid['fluid'].general.material = 'oil'
+
+solver.setup.boundary_conditions.set_zone_type(
+        zone_list=["in"],
+        new_type="velocity-inlet")
+solver.setup.boundary_conditions.set_zone_type(
+        zone_list=["out"], 
+        new_type="pressure-outlet"
+
+solver.setup.boundary_conditions.velocity_inlet["in"].momentum.velocity_magnitude.value = 5,
+solver.setup.boundary_conditions.pressure_outlet["out"].momentum.gauge_pressure.value = 100000"
+
+# Pressure reports
+solver.settings.solution.report_definitions.surface["p_in"] = {
+        "report_type": "surface-areaavg",
+        "field": "pressure",
+        "surface_names": ["in"]
+    }
+solver.settings.solution.report_definitions.surface["p_out"] = {
+        "report_type": "surface-areaavg",
+        "field": "pressure",
+        "surface_names": ["out"]
+    }
+# Pressure drop
+solver.setup.named_expressions["pressure_drop"] = {
+"definition": "p_in-p_out",
+    }
+# Pressure drop
+solver.settings.solution.report_definitions.single_valued_expression["pressure_drop_rep"] = {
+ "definition": "p_in-p_out"
+    }  
+# Flow reports
+solver.settings.solution.report_definitions.surface["m_dot_in"] = {
+    "report_type": "surface-massflowrate",
+    "surface_names": ["in"]
+    }
+solver.settings.solution.report_definitions.surface["m_dot_out"] = {
+        "report_type": "surface-massflowrate",
+        "surface_names": ["out"]
+    }
+solver.settings.solution.report_definitions.surface["q_in"] = {
+    "report_type": "surface-volumeflowrate",
+    "surface_names": ["in"]
+    }
+solver.settings.solution.report_definitions.surface[\"q_out\"] = {\n",
+    "report_type": "surface-volumeflowrate",
+    "surface_names": ["out"]
+    }
+solver.setup.named_expressions["q_out_lpm"] = {
+    "definition": "q_out*60000"
+    }
+solver.setup.named_expressions["q_in_lpm"] = {
+    "definition": "q_in*60000"
+    }  
+
+#for creating planes
+import numpy as np    
+    D=0.025
+    R=D/2
+    L=1.0    
+#Axial locations where you want velocity profiles
+y_locations=np.linspace(0.1,1.0,10)
+    
+for i,y in enumerate(y_locations,start=1):
+    line_name=f\"velocity_profile_{i}
+    solver.tui.surface.line_surface(line_name,0.0,float(y),+R,0.0,float(y),-R)
+
+solver.solution.initialization.hybrid_initialize()
+
+# 1. Instantiate the monitor file tracker cleanly
+solver.settings.solution.monitor.report_files["convergence_tracker"] = {}
+# 2. Assign the configuration properties
+solver.settings.solution.monitor.report_files["convergence_tracker"] = {
+        "file_name": "XX.out\",\n",
+        "frequency_of": "iteration",
+        "frequency": 1,
+        "report_def": ["p_in", "p_out", "pressure_drop_rep", "m_dot_in", "m_dot_out"]
+    }
+
+
+solver.settings.solution.run_calculation.iter_count = 250
+
+
+solver.file.write(
+    file_type="case",
+    file_name="XX.cas.h5"
+    )
+    
+solver.file.write(
+    file_type="data",
+    file_name="xx.dat.h5"
+    )
